@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flysystem"
+version = "0.0.1"
+description = "Abstraction for local and remote filesystems"
+readme = "README.md"
+keywords = ["filesystem", "storage", "fs", "s3", "cloud-storage"]
+authors = [
+    { name="Oanh Nguyen", email="oanhnn.bk@gmail.com" },
+]
+maintainers = [
+    { name="Rabiloo Developers", email="oss@rabiloo.com" },
+]
+license = { file="LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 2 - Pre-Alpha",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/rabiloo/python-flysystem"
+"Bug Tracker" = "https://github.com/rabiloo/python-flysystem/issues"

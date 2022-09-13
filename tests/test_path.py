@@ -4,24 +4,24 @@ from flysystem.path import WhitespacePathNormalizer
 
 paths = (
     (".", ""),
-    ("/path/to/dir/.", "path/to/dir"),
-    ("/dirname/", "dirname"),
+    ("/path/to/dir/.", "/path/to/dir"),
+    ("/dirname/", "/dirname"),
     ("dirname/..", ""),
     ("dirname/../", ""),
     ("dirname./", "dirname."),
     ("dirname/./", "dirname"),
     ("dirname/.", "dirname"),
     ("./dir/../././", ""),
-    ("/something/deep/../../dirname", "dirname"),
+    ("/something/deep/../../dirname", "/dirname"),
     ("00004869/files/other/10-75..stl", "00004869/files/other/10-75..stl"),
-    ("/dirname//subdir///subsubdir", "dirname/subdir/subsubdir"),
-    ("\\dirname\\\\subdir\\\\\\subsubdir", "dirname/subdir/subsubdir"),
-    ("\\\\some\\shared\\\\drive", "some/shared/drive"),
+    ("/dirname//subdir///subsubdir", "/dirname/subdir/subsubdir"),
+    ("\\dirname\\\\subdir\\\\\\subsubdir", "/dirname/subdir/subsubdir"),
+    ("\\\\some\\shared\\\\drive", "/some/shared/drive"),
     ("C:\\dirname\\\\subdir\\\\\\subsubdir", "C:/dirname/subdir/subsubdir"),
     ("C:\\\\dirname\\subdir\\\\subsubdir", "C:/dirname/subdir/subsubdir"),
     ("example/path/..txt", "example/path/..txt"),
-    ("\\example\\path.txt", "example/path.txt"),
-    ("\\example\\..\\path.txt", "path.txt"),
+    ("\\example\\path.txt", "/example/path.txt"),
+    ("\\example\\..\\path.txt", "/path.txt"),
 )
 normalizer = WhitespacePathNormalizer()
 

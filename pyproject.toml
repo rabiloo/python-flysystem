@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = [ "setuptools>=61.0" ]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,14 +7,14 @@ name = "flysystem"
 version = "0.0.1"
 description = "Abstraction for local and remote filesystems"
 readme = "README.md"
-keywords = ["filesystem", "storage", "fs", "s3", "cloud-storage"]
+keywords = [ "filesystem", "storage", "fs", "s3", "cloud-storage" ]
 authors = [
-    { name="Oanh Nguyen", email="oanhnn.bk@gmail.com" },
+    { name = "Oanh Nguyen", email = "oanhnn.bk@gmail.com" },
 ]
 maintainers = [
-    { name="Rabiloo Developers", email="oss@rabiloo.com" },
+    { name = "Rabiloo Developers", email = "oss@rabiloo.com" },
 ]
-license = { file="LICENSE" }
+license = {text = "The MIT License"}
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -22,7 +22,28 @@ classifiers = [
     "Operating System :: OS Independent",
     "Development Status :: 2 - Pre-Alpha",
 ]
+dependencies = [
+
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "flake8",
+    "flake8-pyproject",
+    "pytest",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/rabiloo/python-flysystem"
+"Repository" = "https://github.com/rabiloo/python-flysystem"
 "Bug Tracker" = "https://github.com/rabiloo/python-flysystem/issues"
+
+
+# Config Flake8
+[tool.flake8]
+
+count = true
+max-complexity = 10
+max-line-length = 120
+statistics = true

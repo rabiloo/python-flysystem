@@ -1,7 +1,7 @@
 # Python Flysystem
 
+[![Testing](https://github.com/rabiloo/python-flysystem/actions/workflows/test.yml/badge.svg)](https://github.com/rabiloo/python-flysystem/actions/workflows/test.yml)
 [![Latest Version](https://img.shields.io/pypi/v/flysystem.svg)](https://pypi.org/project/flysystem)
-[![GitHub Tests Status](https://img.shields.io/github/workflow/status/rabiloo/python-flysystem/Testing?label=tests)](https://github.com/rabiloo/python-flysystem/actions?query=workflow%3ATesting+branch%3Amaster)
 [![Downloads](https://img.shields.io/pypi/dm/flysystem.svg)](https://pypi.org/project/flysystem)
 [![Pypi Status](https://img.shields.io/pypi/status/flysystem.svg)](https://pypi.org/project/flysystem)
 [![Python Versions](https://img.shields.io/pypi/pyversions/flysystem.svg)](https://pypi.org/project/flysystem)
@@ -12,7 +12,7 @@
 
 Flysystem is created by [Frank de Jonge](https://github.com/frankdejonge) and https://thephpleague.com/
 
-Python Flysystem is a port for Python
+Python Flysystem is a port of Flysystem for Python
 
 ## Install
 

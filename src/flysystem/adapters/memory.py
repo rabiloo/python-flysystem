@@ -1,17 +1,59 @@
-"""
-Module flysystem.adapters
-"""
+from datetime import datetime
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+from typing_extensions import Self
+from flysystem.visibility import Visibility
+from ..adapters import FilesystemAdapter
 
-from abc import ABCMeta, abstractmethod
-from typing import IO
+
+class InMemoryFile:
+    def __init__(self) -> None:
+        self._contents = ""
+        self._last_modified = int(datetime.now().timestamp())
+        self._visibility = Visibility.PUBLIC
+
+    def read(self) -> str:
+        return self._contents
+
+    def read_stream(self) -> None:
+        # TODO
+        return ""
+
+    #     tempfile = NamedTemporaryFile()
+    #     tempfile.write
+
+    def file_size(self) -> int:
+        return len(self._contents)
+
+    def last_modified(self) -> int:
+        return self._last_modified
+
+    def mime_type(self) -> str:
+        # TODO
+        return ""
+
+    def visibility(self) -> str:
+        return self._visibility
+
+    def with_contents(self, contents: str, timestamp: int = None) -> Self:
+        self._contents = contents
+        self._last_modified = timestamp or int(datetime.now().timestamp())
+        return self
+
+    def with_visibility(self, visibility: str) -> Self:
+        self._visibility = visibility
+        return self
+
+    def with_last_modified(self, timestamp: int) -> Self:
+        self._last_modified = timestamp
+        return self
 
 
-class FilesystemAdapter(metaclass=ABCMeta):
-    """
-    FilesystemAdapter interface
-    """
+class InMemoryFilesystemAdapter(FilesystemAdapter):
+    def __init__(self, default_visibility: str = Visibility.PUBLIC) -> None:
+        self.files: dict = {}
+        self.default_visibility = default_visibility
 
-    @abstractmethod
     def file_exists(self, path: str) -> bool:
         """
         Determine if a file exists.
@@ -20,8 +62,9 @@ class FilesystemAdapter(metaclass=ABCMeta):
         Returns:
             True if the file exsited
         """
+        file = self.files.get(path)
+        return file is not None and isinstance(file, InMemoryFile)
 
-    @abstractmethod
     def directory_exists(self, path: str) -> bool:
         """
         Determine if a directory exists.
@@ -30,8 +73,9 @@ class FilesystemAdapter(metaclass=ABCMeta):
         Returns:
             True if the directory exsited
         """
+        dir = self.files.get(path)
+        return dir is not None and isinstance(dir, dict)
 
-    @abstractmethod
     def write(self, path: str, contents: str, options: dict[str, any] = None):
         """
         Write the contents of a file.
@@ -43,7 +87,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             None
         """
 
-    @abstractmethod
     def write_stream(self, path: str, resource: IO, options: dict[str, any] = None):
         """
         Write the contents of a file from stream
@@ -55,7 +98,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             None
         """
 
-    @abstractmethod
     def read(self, path: str) -> str:
         """
         Get the contents of a file.
@@ -64,8 +106,8 @@ class FilesystemAdapter(metaclass=ABCMeta):
         Returns:
             The contents of file as string
         """
+        return Path(path).read_text()
 
-    @abstractmethod
     def read_stream(self, path: str) -> IO:
         """
         Read the contents of a file as tream
@@ -74,8 +116,8 @@ class FilesystemAdapter(metaclass=ABCMeta):
         Returns:
             The contents of file as stream
         """
+        return Path(path).open("r")
 
-    @abstractmethod
     def delete(self, path: str):
         """
         Delete a file
@@ -84,8 +126,8 @@ class FilesystemAdapter(metaclass=ABCMeta):
         Returns:
             None
         """
+        Path(path).unlink(missing_ok=True)
 
-    @abstractmethod
     def delete_directory(self, path: str):
         """
         Recursively delete a directory.
@@ -95,7 +137,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             True if the directory is deleted successfully
         """
 
-    @abstractmethod
     def create_directory(self, path: str, options: dict[str, any] = None):
         """
         Create a directory.
@@ -106,7 +147,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             True if the directory is created successfully
         """
 
-    @abstractmethod
     def set_visibility(self, path: str, visibility: str):
         """
         Set file visibility
@@ -117,7 +157,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             None
         """
 
-    @abstractmethod
     def visibility(self, path: str) -> str:
         """
         Get visibility of file
@@ -127,7 +166,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             The file's visibility
         """
 
-    @abstractmethod
     def file_size(self, path: str) -> int:
         """
         Get size of file
@@ -137,7 +175,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             The file size in bytes
         """
 
-    @abstractmethod
     def mime_type(self, path: str) -> str:
         """
         Get mimetype of file
@@ -147,7 +184,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             The file's mimetype
         """
 
-    @abstractmethod
     def last_modified(self, path: str) -> int:
         """
         Get last modified time
@@ -157,7 +193,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             The file's last modified time as timestamp
         """
 
-    @abstractmethod
     def list_contents(self, path: str) -> list[str]:
         """
         Get all (recursive) of the directories within a given directory.
@@ -167,7 +202,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             List all directories in the given directory
         """
 
-    @abstractmethod
     def copy(self, source: str, destination: str, options: dict[str, any] = None):
         """
         Copy a file
@@ -179,7 +213,6 @@ class FilesystemAdapter(metaclass=ABCMeta):
             None
         """
 
-    @abstractmethod
     def move(self, source: str, destination: str, options: dict[str, any] = None):
         """
         Copy a file

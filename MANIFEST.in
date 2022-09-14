@@ -1,0 +1,6 @@
+include LICENSE
+include MANIFEST.in
+include README.md
+
+recursive-include src *.py
+recursive-include tests *.py

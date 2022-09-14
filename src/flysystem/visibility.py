@@ -3,23 +3,27 @@ Module flysystem
 """
 
 from abc import ABCMeta, abstractmethod
+from enum import Enum, unique
 from typing import Final, final
 
 from .error import InvalidVisibilityProvided
 
 
 @final
-class Visibility:
+@unique
+class Visibility(str, Enum):
     """
-    Visibility class
+    Visibility enum
     """
 
     PUBLIC: Final[str] = "public"
     PRIVATE: Final[str] = "private"
 
-    @staticmethod
-    def validate(visibility: str):
-        if visibility != Visibility.PUBLIC and visibility != Visibility.PRIVATE:
+    @classmethod
+    def validate(cls, visibility: str):
+        try:
+            cls(visibility)
+        except Exception:
             raise InvalidVisibilityProvided.with_visibility(visibility)
 
 
@@ -39,27 +43,27 @@ class UnixVisibilityConverter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def for_file(self, visibility: str) -> int:
+    def for_file(self, visibility: Visibility) -> int:
         """
         Convert visibility to Unix visibility for file
         Arguments:
-            visibility: The file visibility (string format)
+            visibility: The file visibility
         Returns:
             Unix visibility format (int)
         """
 
     @abstractmethod
-    def for_directory(self, visibility: str) -> int:
+    def for_directory(self, visibility: Visibility) -> int:
         """
         Convert visibility to Unix visibility for directory
         Arguments:
-            visibility: The directory visibility (string format)
+            visibility: The directory visibility
         Returns:
             Unix visibility format (int)
         """
 
     @abstractmethod
-    def inverse_for_file(self, visibility: int) -> str:
+    def inverse_for_file(self, visibility: int) -> Visibility:
         """
         Convert Unix visibility to visibility for file
         Arguments:
@@ -69,7 +73,7 @@ class UnixVisibilityConverter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def inverse_for_directory(self, visibility: int) -> str:
+    def inverse_for_directory(self, visibility: int) -> Visibility:
         """
         Convert Unix visibility to visibility for directory
         Arguments:
@@ -90,7 +94,7 @@ class PortableUnixVisibilityConverter(UnixVisibilityConverter):
         file_private: int = 0o600,
         directory_public: int = 0o755,
         directory_private: int = 0o700,
-        default_directory: str = Visibility.PRIVATE,
+        default_directory: Visibility = Visibility.PRIVATE,
     ) -> None:
         self.file_public = file_public
         self.file_private = file_private
@@ -112,7 +116,7 @@ class PortableUnixVisibilityConverter(UnixVisibilityConverter):
             else self.directory_private
         )
 
-    def for_file(self, visibility: str) -> int:
+    def for_file(self, visibility: Visibility) -> int:
         """
         Convert visibility to Unix visibility for file
         Arguments:
@@ -120,12 +124,11 @@ class PortableUnixVisibilityConverter(UnixVisibilityConverter):
         Returns:
             Unix visibility format (int)
         """
-        Visibility.validate(visibility)
         return (
-            self.file_public if visibility == Visibility.PUBLIC else self.file_private
+            self.file_public if visibility is Visibility.PUBLIC else self.file_private
         )
 
-    def for_directory(self, visibility: str) -> int:
+    def for_directory(self, visibility: Visibility) -> int:
         """
         Convert visibility to Unix visibility for directory
         Arguments:
@@ -133,14 +136,11 @@ class PortableUnixVisibilityConverter(UnixVisibilityConverter):
         Returns:
             Unix visibility format (int)
         """
-        Visibility.validate(visibility)
         return (
-            self.directory_public
-            if visibility == Visibility.PUBLIC
-            else self.directory_private
+            self.directory_public if visibility is Visibility.PUBLIC else self.directory_private
         )
 
-    def inverse_for_file(self, visibility: int) -> str:
+    def inverse_for_file(self, visibility: int) -> Visibility:
         """
         Convert Unix visibility to visibility for file
         Arguments:
@@ -155,7 +155,7 @@ class PortableUnixVisibilityConverter(UnixVisibilityConverter):
         # Default
         return Visibility.PUBLIC
 
-    def inverse_for_directory(self, visibility: int) -> str:
+    def inverse_for_directory(self, visibility: int) -> Visibility:
         """
         Convert Unix visibility to visibility for directory
         Arguments:

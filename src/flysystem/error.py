@@ -2,7 +2,7 @@
 Module flysystem
 """
 
-from typing import Final
+from typing import final
 from typing_extensions import Self
 
 
@@ -12,7 +12,7 @@ class FlyFilesystemException(Exception):
     """
 
 
-@Final
+@final
 class CorruptedPathDetected(FlyFilesystemException):
     """
     CorruptedPathDetected exception
@@ -23,7 +23,7 @@ class CorruptedPathDetected(FlyFilesystemException):
         return cls("Corrupted path detected: " + path)
 
 
-@Final
+@final
 class InvalidVisibilityProvided(FlyFilesystemException):
     """
     InvalidVisibilityProvided exception
@@ -46,20 +46,20 @@ class UnableToOperateToFile(FlyFilesystemException):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
-    @Final
+    @final
     def operation(self) -> str:
         return self._operation
 
-    @Final
+    @final
     def location(self) -> str:
         return self._location
 
-    @Final
+    @final
     def reason(self) -> str:
         return self._reason
 
 
-@Final
+@final
 class UnableToReadFile(UnableToOperateToFile):
     @classmethod
     def with_location(cls, location: str, reason: str = "") -> Self:
@@ -73,7 +73,7 @@ class UnableToReadFile(UnableToOperateToFile):
         return this
 
 
-@Final
+@final
 class UnableToWriteFile(UnableToOperateToFile):
     @classmethod
     def with_location(cls, location: str, reason: str = "") -> Self:

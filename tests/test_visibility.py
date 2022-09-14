@@ -3,26 +3,22 @@ from flysystem.error import InvalidVisibilityProvided
 from flysystem.visibility import PortableUnixVisibilityConverter, Visibility
 
 
+class TestVisibility:
+    def test_determining_an_incorrect_visibility(self) -> None:
+        with pytest.raises(InvalidVisibilityProvided):
+            Visibility.validate("invalid-visibility")
+
+
 class TestPortableUnixVisibilityConverter:
     def test_determining_visibility_for_a_file(self) -> None:
         converter = PortableUnixVisibilityConverter()
         assert 0o644 == converter.for_file(Visibility.PUBLIC)
         assert 0o600 == converter.for_file(Visibility.PRIVATE)
 
-    def test_determining_an_incorrect_visibility_for_a_file(self) -> None:
-        with pytest.raises(InvalidVisibilityProvided):
-            converter = PortableUnixVisibilityConverter()
-            converter.for_file("invalid-visibility")
-
     def test_determining_visibility_for_a_directory(self) -> None:
         converter = PortableUnixVisibilityConverter()
         assert 0o755 == converter.for_directory(Visibility.PUBLIC)
         assert 0o700 == converter.for_directory(Visibility.PRIVATE)
-
-    def test_determining_an_incorrect_visibility_for_a_directory(self) -> None:
-        with pytest.raises(InvalidVisibilityProvided):
-            converter = PortableUnixVisibilityConverter()
-            converter.for_directory("invalid-visibility")
 
     def test_inversing_for_a_file(self) -> None:
         converter = PortableUnixVisibilityConverter()

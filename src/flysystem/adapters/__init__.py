@@ -3,7 +3,7 @@ Module flysystem.adapters
 """
 
 from abc import ABCMeta, abstractmethod
-from typing import IO
+from typing import IO, Any, Dict, List
 
 
 class FilesystemAdapter(metaclass=ABCMeta):
@@ -28,11 +28,11 @@ class FilesystemAdapter(metaclass=ABCMeta):
         Arguments:
             path: The directory path
         Returns:
-            True if the directory exsited
+            True if the directory existed
         """
 
     @abstractmethod
-    def write(self, path: str, contents: str, options: dict[str, any] = None):
+    def write(self, path: str, contents: str, options: Dict[str, Any] = None):
         """
         Write the contents of a file.
         Arguments:
@@ -44,12 +44,12 @@ class FilesystemAdapter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def write_stream(self, path: str, resource: IO, options: dict[str, any] = None):
+    def write_stream(self, path: str, resource: IO, options: Dict[str, Any] = None):
         """
         Write the contents of a file from stream
         Arguments:
             path: The file path
-            contents: The stream
+            resource: The stream
             options: Write options
         Returns:
             None
@@ -68,7 +68,7 @@ class FilesystemAdapter(metaclass=ABCMeta):
     @abstractmethod
     def read_stream(self, path: str) -> IO:
         """
-        Read the contents of a file as tream
+        Read the contents of a file as stream
         Arguments:
             path: The file path
         Returns:
@@ -96,7 +96,7 @@ class FilesystemAdapter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def create_directory(self, path: str, options: dict[str, any] = None):
+    def create_directory(self, path: str, options: Dict[str, Any] = None):
         """
         Create a directory.
         Arguments:
@@ -158,17 +158,17 @@ class FilesystemAdapter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def list_contents(self, path: str) -> list[str]:
+    def list_contents(self, path: str) -> List[str]:
         """
         Get all (recursive) of the directories within a given directory.
         Arguments:
-            directory: Directory path
+            path: Directory path
         Returns:
             List all directories in the given directory
         """
 
     @abstractmethod
-    def copy(self, source: str, destination: str, options: dict[str, any] = None):
+    def copy(self, source: str, destination: str, options: Dict[str, Any] = None):
         """
         Copy a file
         Arguments:
@@ -180,9 +180,9 @@ class FilesystemAdapter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def move(self, source: str, destination: str, options: dict[str, any] = None):
+    def move(self, source: str, destination: str, options: Dict[str, Any] = None):
         """
-        Copy a file
+        Move a file
         Arguments:
             source: Path to source file
             destination: Path to destination file

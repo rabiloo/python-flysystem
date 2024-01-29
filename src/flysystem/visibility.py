@@ -11,13 +11,13 @@ from .error import InvalidVisibilityProvided
 
 @final
 @unique
-class Visibility(str, Enum):
+class Visibility(Enum):
     """
     Visibility enum
     """
 
-    PUBLIC: Final[str] = "public"
-    PRIVATE: Final[str] = "private"
+    PUBLIC: Final = "public"
+    PRIVATE: Final = "private"
 
     @classmethod
     def validate(cls, visibility: str):
@@ -110,11 +110,7 @@ class PortableUnixVisibilityConverter(UnixVisibilityConverter):
         Returns:
             Unix visibility format (int)
         """
-        return (
-            self.directory_public
-            if self.default_directory == Visibility.PUBLIC
-            else self.directory_private
-        )
+        return self.directory_public if self.default_directory == Visibility.PUBLIC else self.directory_private
 
     def for_file(self, visibility: Visibility) -> int:
         """
@@ -124,9 +120,7 @@ class PortableUnixVisibilityConverter(UnixVisibilityConverter):
         Returns:
             Unix visibility format (int)
         """
-        return (
-            self.file_public if visibility is Visibility.PUBLIC else self.file_private
-        )
+        return self.file_public if visibility is Visibility.PUBLIC else self.file_private
 
     def for_directory(self, visibility: Visibility) -> int:
         """
@@ -136,9 +130,7 @@ class PortableUnixVisibilityConverter(UnixVisibilityConverter):
         Returns:
             Unix visibility format (int)
         """
-        return (
-            self.directory_public if visibility is Visibility.PUBLIC else self.directory_private
-        )
+        return self.directory_public if visibility is Visibility.PUBLIC else self.directory_private
 
     def inverse_for_file(self, visibility: int) -> Visibility:
         """

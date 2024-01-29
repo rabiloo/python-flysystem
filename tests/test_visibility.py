@@ -1,4 +1,5 @@
 import pytest
+
 from flysystem.error import InvalidVisibilityProvided
 from flysystem.visibility import PortableUnixVisibilityConverter, Visibility
 

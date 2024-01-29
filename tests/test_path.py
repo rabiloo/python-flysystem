@@ -1,6 +1,6 @@
 import pytest
-from flysystem.path import WhitespacePathNormalizer
 
+from flysystem.path import WhitespacePathNormalizer
 
 paths = (
     (".", ""),

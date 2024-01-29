@@ -3,8 +3,7 @@ Module flysystem
 """
 
 from abc import ABCMeta, abstractmethod
-from typing import IO
-
+from typing import IO, Any, Dict, List
 
 from .adapters import FilesystemAdapter
 from .path import PathNormalizer, WhitespacePathNormalizer
@@ -107,11 +106,11 @@ class FilesystemReader(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def list_contents(self, path: str) -> list[str]:
+    def list_contents(self, path: str) -> List[str]:
         """
         Get all (recursive) of the directories within a given directory.
         Arguments:
-            directory: Directory path
+            path: Directory path
         Returns:
             List all directories in the given directory
         """
@@ -124,7 +123,7 @@ class FilesystemWriter(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def write(self, path: str, contents: str, options: dict[str, any] = None):
+    def write(self, path: str, contents: str, options: Dict[str, Any] = None):
         """
         Write the contents of a file.
         Arguments:
@@ -136,12 +135,12 @@ class FilesystemWriter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def write_stream(self, path: str, resource: IO, options: dict[str, any] = None):
+    def write_stream(self, path: str, resource: IO, options: Dict[str, Any] = None):
         """
         Write the contents of a file from stream
         Arguments:
             path: The file path
-            contents: The stream
+            resource: The stream
             options: Write options
         Returns:
             None
@@ -179,7 +178,7 @@ class FilesystemWriter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def create_directory(self, path: str, options: dict[str, any] = None):
+    def create_directory(self, path: str, options: Dict[str, Any] = None):
         """
         Create a directory.
         Arguments:
@@ -190,7 +189,7 @@ class FilesystemWriter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def copy(self, source: str, destination: str, options: dict[str, any] = None):
+    def copy(self, source: str, destination: str, options: Dict[str, Any] = None):
         """
         Copy a file
         Arguments:
@@ -202,7 +201,7 @@ class FilesystemWriter(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def move(self, source: str, destination: str, options: dict[str, any] = None):
+    def move(self, source: str, destination: str, options: Dict[str, Any] = None):
         """
         Copy a file
         Arguments:
@@ -228,7 +227,7 @@ class Filesystem(FilesystemOperator):
     def __init__(
         self,
         adapter: FilesystemAdapter,
-        config: dict[str, any] = None,
+        config: Dict[str, Any] = None,
         path_normalizer: PathNormalizer = None,
     ):
         self.adapter = adapter
@@ -242,18 +241,18 @@ class Filesystem(FilesystemOperator):
     def file_exists(self, path: str) -> bool:
         return self.adapter.file_exists(self.path_normalizer.normalize(path))
 
-    def write(self, path: str, contents: str, options: dict[str, any] = None):
+    def write(self, path: str, contents: str, options: Dict[str, Any] = None):
         self.adapter.write(
             self.path_normalizer.normalize(path),
             contents,
-            self.config | (options or {}),
+            (self.config or {}) | (options or {}),
         )
 
-    def write_stream(self, path: str, resource: IO, options: dict[str, any] = None):
+    def write_stream(self, path: str, resource: IO, options: Dict[str, Any] = None):
         self.adapter.write_stream(
             self.path_normalizer.normalize(path),
             resource,
-            self.config | (options or {}),
+            (self.config or {}) | (options or {}),
         )
 
     def read(self, path: str) -> str:
@@ -286,24 +285,22 @@ class Filesystem(FilesystemOperator):
     def delete_directory(self, path: str):
         self.adapter.delete_directory(self.path_normalizer.normalize(path))
 
-    def create_directory(self, path: str, options: dict[str, any] = None):
-        self.adapter.create_directory(
-            self.path_normalizer.normalize(path), self.config | options
-        )
+    def create_directory(self, path: str, options: Dict[str, Any] = None):
+        self.adapter.create_directory(self.path_normalizer.normalize(path), (self.config or {}) | (options or {}))
 
-    def list_contents(self, path: str) -> list[str]:
+    def list_contents(self, path: str) -> List[str]:
         return self.adapter.list_contents(self.path_normalizer.normalize(path))
 
-    def copy(self, source: str, destination: str, options: dict[str, any] = None):
+    def copy(self, source: str, destination: str, options: Dict[str, Any] = None):
         self.adapter.copy(
             self.path_normalizer.normalize(source),
             self.path_normalizer.normalize(destination),
-            self.config | (options or {}),
+            (self.config or {}) | (options or {}),
         )
 
-    def move(self, source: str, destination: str, options: dict[str, any] = None):
+    def move(self, source: str, destination: str, options: Dict[str, Any] = None):
         self.adapter.move(
             self.path_normalizer.normalize(source),
             self.path_normalizer.normalize(destination),
-            self.config | (options or {}),
+            (self.config or {}) | (options or {}),
         )

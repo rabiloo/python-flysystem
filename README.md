@@ -23,7 +23,14 @@ $ pip install flysystem
 ## Usage
 
 ```
+from flysystem.adapters.local import LocalFilesystemAdapter
+from flysystem.filesystem import Filesystem
 
+
+adapter = LocalFilesystemAdapter(".")
+filesystem = Filesystem(adapter)
+
+filesystem.file_exists("/tmp/hello.txt")
 ```
 
 ## Changelog

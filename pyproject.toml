@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flysystem"
-version = "0.0.1"
+version = "0.1.0"
 description = "Abstraction for local and remote filesystems"
 readme = "README.md"
 keywords = [ "filesystem", "storage", "fs", "s3", "cloud-storage" ]

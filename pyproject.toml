@@ -47,6 +47,7 @@ count = true
 max-complexity = 10
 max-line-length = 120
 statistics = true
+ignore = ["W503"]
 
 
 [tool.black]

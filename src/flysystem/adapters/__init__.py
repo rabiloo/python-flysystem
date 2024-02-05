@@ -190,3 +190,14 @@ class FilesystemAdapter(metaclass=ABCMeta):
         Returns:
             None
         """
+
+    @abstractmethod
+    def temporary_url(self, path: str, options: Dict[str, Any] = None):
+        """
+        Get pre-signed url of a file
+        Arguments:
+            path: The file path
+            options: Temporary file options
+        Returns:
+            The pre-signed url of file as string
+        """

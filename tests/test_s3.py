@@ -1,6 +1,7 @@
 import io
 import os
 import time
+import urllib.request
 
 from typing import IO
 
@@ -12,6 +13,7 @@ from flysystem.error import (
     UnableToCopyFile,
     UnableToCreateDirectory,
     UnableToDeleteFile,
+    UnableToGenerateTemporaryUrl,
     UnableToMoveFile,
     UnableToReadFile,
     UnableToRetrieveMetadata,
@@ -142,8 +144,8 @@ def test_read_stream(path: str, expected: str, error: Exception):
         with pytest.raises(error):
             filesystem.read_stream(path)
     else:
-        steam = filesystem.read_stream(path)
-        assert steam.read().strip().decode("utf-8") == expected
+        stream = filesystem.read_stream(path)
+        assert stream.read().strip().decode("utf-8") == expected
 
 
 @pytest.mark.parametrize(
@@ -203,6 +205,27 @@ def test_last_modified(path: str, expected: int, error: Exception):
 )
 def test_list_contents(path: str, expected: str):
     assert filesystem.list_contents(path) == expected
+
+
+@pytest.mark.parametrize(
+    "path,expected,error",
+    (
+        ("tests/tmp.txt", b"hello world", None),
+        ("tests/tmp2.txt", b"hello world", None),
+        ("tests/tmp3.txt", None, UnableToGenerateTemporaryUrl),
+        ("/", None, UnableToGenerateTemporaryUrl),
+        ("tests/", None, UnableToGenerateTemporaryUrl),
+    ),
+)
+def test_temporary_url(path: str, expected: bytes, error: Exception):
+    if error is not None:
+        with pytest.raises(error):
+            filesystem.temporary_url(path)
+
+    else:
+        url = filesystem.temporary_url(path)
+        with urllib.request.urlopen(url) as response:
+            assert response.status == 200 and response.read() == expected
 
 
 @pytest.mark.parametrize(

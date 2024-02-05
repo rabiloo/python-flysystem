@@ -14,6 +14,7 @@ from ..error import (
     UnableToCreateDirectory,
     UnableToDeleteDirectory,
     UnableToDeleteFile,
+    UnableToGenerateTemporaryUrl,
     UnableToMoveFile,
     UnableToReadFile,
     UnableToRetrieveMetadata,
@@ -342,3 +343,36 @@ class S3FilesystemAdapter(FilesystemAdapter):
             self._bucket.Object(source).delete()
         except ClientError as ex:
             raise UnableToMoveFile.with_location(source, destination, str(ex))
+
+    def temporary_url(self, path: str, options: Dict[str, Any] = None) -> str:
+        """
+        Get pre-signed url of a file
+        Arguments:
+            path: The file path
+            options: Temporary file options
+        Returns:
+            The pre-signed url of file as string
+        """
+        if path.endswith("/"):
+            raise UnableToGenerateTemporaryUrl.with_location(path, "Could not generate url for a directory")
+        if not self.file_exists(path):
+            raise UnableToGenerateTemporaryUrl.with_location(path, "File does not exist")
+        try:
+            default_expired_time = 7 * 24 * 3600  # default is 1 week
+            if options is not None:
+                expired_time = options.get("expired_time", default_expired_time)
+            else:
+                expired_time = default_expired_time
+
+            url = self._client.generate_presigned_url(
+                "get_object",
+                Params={
+                    "Bucket": self._bucket_name,
+                    "Key": path,
+                },
+                # Expired time of Request URL (second)
+                ExpiresIn=expired_time,
+            )
+        except ClientError as ex:
+            raise UnableToGenerateTemporaryUrl.with_location(path, str(ex))
+        return url

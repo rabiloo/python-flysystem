@@ -299,3 +299,14 @@ class LocalFilesystemAdapter(FilesystemAdapter):
             raise UnableToMoveFile.with_location(source, destination, str(ex))
         except OSError as ex:
             raise UnableToMoveFile.with_location(source, destination, str(ex))
+
+    def temporary_url(self, path: str, options: Dict[str, Any] = None) -> str:
+        """
+        Get pre-signed url of a file
+        Arguments:
+            path: The file path
+            options: Temporary file options
+        Returns:
+            The pre-signed url of file as string
+        """
+        raise NotImplementedError

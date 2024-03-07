@@ -52,6 +52,7 @@ class FilesystemOperationFailed(Enum):
     OPERATION_READ = "READ"
     OPERATION_SET_VISIBILITY = "SET_VISIBILITY"
     OPERATION_LIST_CONTENTS = "LIST_CONTENTS"
+    OPERATION_TEMPORARY_URL = "TEMPORARY_URL"
 
 
 class UnableToOperateToFile(FlyFilesystemException):
@@ -193,6 +194,18 @@ class UnableToWriteFile(UnableToOperateToFile):
         msg = f"Unable to write file from location: {location}. {reason}".rstrip()
         this = cls(msg)
         this._operation = FilesystemOperationFailed.OPERATION_WRITE.value
+        this._location = location
+        this._reason = reason
+        return this
+
+
+@final
+class UnableToGenerateTemporaryUrl(UnableToOperateToFile):
+    @classmethod
+    def with_location(cls, location: str, reason: str = "") -> Self:
+        msg = f"Unable to generate pre-signed url from location: {location}. {reason}".rstrip()
+        this = cls(msg)
+        this._operation = FilesystemOperationFailed.OPERATION_TEMPORARY_URL.value
         this._location = location
         this._reason = reason
         return this

@@ -304,3 +304,6 @@ class Filesystem(FilesystemOperator):
             self.path_normalizer.normalize(destination),
             (self.config or {}) | (options or {}),
         )
+
+    def temporary_url(self, path: str, options: Dict[str, Any] = None):
+        return self.adapter.temporary_url(path, options)
